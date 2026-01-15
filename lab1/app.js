@@ -1,55 +1,69 @@
-// var createError = require('http-errors');
-// var express = require('express');
-// var path = require('path');
-// var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-//
-// var indexRouter = require('./routes/index');
-// var usersRouter = require('./routes/users');
-//
-// var app = express();
-//
-// // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
-//
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
-//
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-//
-// // catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
-//
-// // error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-//
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
-//
-// module.exports = app;
+// Main Application File - MVC Architecture with Session Management
 const express = require('express');
+const session = require('express-session');
+const path = require('path');
 const app = express();
 
+// View engine setup
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'views'));
 
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Session configuration
+app.use(session({
+    secret: 'your-secret-key-change-this-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        httpOnly: true
+    }
+}));
+
+// Routes
+const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/product.routes');
-app.use('/', productRoutes);
 
-app.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
+// Root redirect to login
+app.get('/', (req, res) => {
+    if (req.session && req.session.userId) {
+        res.redirect('/products');
+    } else {
+        res.redirect('/login');
+    }
 });
+
+// Mount routes
+app.use('/', userRoutes);
+app.use('/products', productRoutes);
+
+// Error handling
+app.use((req, res, next) => {
+    res.status(404).render('error', {
+        message: 'Page not found',
+        error: { status: 404 }
+    });
+});
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: err
+    });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log('MVC Architecture with Session Management');
+});
+
+module.exports = app;
+
+

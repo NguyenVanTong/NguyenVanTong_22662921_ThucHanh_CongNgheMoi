@@ -1,55 +1,22 @@
+// Product Routes - Using MVC Pattern
 const express = require('express');
 const router = express.Router();
-const db = require('../db/mysql');
+const ProductController = require('../controllers/productController');
+const { requireAuth } = require('../middleware/auth');
 
-// Home
-router.get('/', async (req, res) => {
-    const [rows] = await db.query('SELECT * FROM products');
-    res.render('products', { products: rows });
-});
+// All product routes require authentication
+router.use(requireAuth);
 
-// Add product
-router.post('/add', async (req, res) => {
-    const { name, price, quantity } = req.body;
-    await db.query(
-        'INSERT INTO products(name, price, quantity) VALUES (?, ?, ?)',
-        [name, parseFloat(price), parseInt(quantity)]
-    );
-    res.redirect('/');
-});
+// Display all products
+router.get('/', ProductController.index);
 
-//delete product
-router.post('/delete', async (req, res) => {
-    const { id } = req.body;
+// Create product
+router.post('/add', ProductController.create);
 
-    try {
-        await db.query(
-            'DELETE FROM products WHERE id = ?',
-            [id]
-        );
+// Update product
+router.post('/update', ProductController.update);
 
-        res.redirect('/');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Delete failed');
-    }
-});
-
-//update product
-router.post('/update', async (req, res) => {
-    const { id, name, price, quantity } = req.body;
-
-    try {
-        await db.query(
-            'UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?',
-            [name, parseFloat(price), parseInt(quantity), parseInt(id)]
-        );
-        res.redirect('/');
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Update failed');
-    }
-});
-
+// Delete product
+router.post('/delete', ProductController.delete);
 
 module.exports = router;
