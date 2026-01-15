@@ -13,7 +13,7 @@ router.post('/add', async (req, res) => {
     const { name, price, quantity } = req.body;
     await db.query(
         'INSERT INTO products(name, price, quantity) VALUES (?, ?, ?)',
-        [name, price, quantity]
+        [name, parseFloat(price), parseInt(quantity)]
     );
     res.redirect('/');
 });
@@ -36,15 +36,19 @@ router.post('/delete', async (req, res) => {
 });
 
 //update product
-router.post('/update/:id', async (req, res) => {
-    const { id } = req.body;
-    await db.query(
-        'UPDATE products\n' +
-        'SET name = ?, price = ?, quantity = ?\n' +
-        'WHERE id = ?\n',
-        [id, name, price, quantity]
-    );
-    res.redirect('/');
+router.post('/update', async (req, res) => {
+    const { id, name, price, quantity } = req.body;
+
+    try {
+        await db.query(
+            'UPDATE products SET name = ?, price = ?, quantity = ? WHERE id = ?',
+            [name, parseFloat(price), parseInt(quantity), parseInt(id)]
+        );
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Update failed');
+    }
 });
 
 

@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Product List</title>
 </head>
 <body>
-<h2>Add Product</h2>
-<form action="/add" method="post">
-  Name: <input name="name"><br>
-  Price: <input name="price"><br>
-  Quantity: <input name="quantity"><br>
-  <button>Add</button>
+<h2>Add / Edit Product</h2>
+<!-- Single shared form for add and update -->
+<form id="productForm" action="/add" method="post">
+  <input type="hidden" id="id" name="id" value="">
+  <label for="name">Name:</label> <input type="text" id="name" name="name" required><br>
+  <label for="price">Price:</label> <input type="number" step="0.01" id="price" name="price" required><br>
+  <label for="quantity">Quantity:</label> <input type="number" id="quantity" name="quantity" required><br>
+  <button id="submitBtn" type="submit">Add</button>
+  <button type="button" onclick="setAddMode()">Cancel</button>
 </form>
 
 <h2>Products</h2>
-<table border="1">
+<table>
   <tr>
     <th>ID</th><th>Name</th><th>Price</th><th>Quantity</th><th>Actions</th>
   </tr>
@@ -32,15 +35,54 @@
         </form>
       </td>
       <td>
-        <form action="/update" method="post" style="display:inline;">
-          <input type="hidden" name="id" value="<%= p.id %>">
-          <button type="submit">Update</button>
-        </form>
+        <!-- Edit uses data- attributes to avoid quoting issues -->
+        <button type="button" class="edit-btn"
+                data-id="<%= p.id %>"
+                data-name="<%= p.name %>"
+                data-price="<%= p.price %>"
+                data-quantity="<%= p.quantity %>"
+                onclick="editFromButton(this)">Edit</button>
       </td>
-
 
     </tr>
   <% }) %>
 </table>
+
+<script>
+  // Helper to read data attributes from the clicked button and call editProduct
+  function editFromButton(btn) {
+    var id = btn.getAttribute('data-id');
+    var name = btn.getAttribute('data-name');
+    var price = btn.getAttribute('data-price');
+    var quantity = btn.getAttribute('data-quantity');
+    editProduct(id, name, price, quantity);
+  }
+
+  // Put the form into edit mode with the product values
+  function editProduct(id, name, price, quantity) {
+    var form = document.getElementById('productForm');
+    form.action = '/update';
+    document.getElementById('id').value = id;
+    document.getElementById('name').value = name;
+    document.getElementById('price').value = price;
+    document.getElementById('quantity').value = quantity;
+    document.getElementById('submitBtn').textContent = 'Save';
+  }
+
+  // Reset form to add mode and clear inputs
+  function setAddMode() {
+    var form = document.getElementById('productForm');
+    form.action = '/add';
+    document.getElementById('id').value = '';
+    form.reset();
+    document.getElementById('submitBtn').textContent = 'Add';
+  }
+
+  // After a submit (page will redirect to /), ensure form inputs clear if page is not reloaded
+  document.getElementById('productForm').addEventListener('submit', function() {
+    // Best-effort reset now; the server redirect will also reload the page and clear fields.
+    setTimeout(setAddMode, 50);
+  });
+</script>
 </body>
 </html>
