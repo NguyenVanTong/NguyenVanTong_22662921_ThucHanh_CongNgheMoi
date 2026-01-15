@@ -4,37 +4,6 @@
 **MSSV:** 22662921  
 **Môn học:** Công Nghệ Mới
 
-## 📋 Tính năng
-
-### ✅ Hoàn thiện đầy đủ các yêu cầu:
-
-1. **CRUD đầy đủ cho Products và Users**
-   - ✓ Create (Thêm)
-   - ✓ Read (Xem/Liệt kê)
-   - ✓ Update (Sửa)
-   - ✓ Delete (Xóa)
-
-2. **Login + Session Management**
-   - ✓ Đăng ký tài khoản (Register)
-   - ✓ Đăng nhập (Login)
-   - ✓ Đăng xuất (Logout)
-   - ✓ Bảo vệ routes với session
-   - ✓ Mã hóa password với bcrypt
-
-3. **Kiến trúc MVC rõ ràng**
-   - ✓ **Models**: Product.js, User.js (Data Access Layer)
-   - ✓ **Views**: EJS templates (Presentation Layer)
-   - ✓ **Controllers**: productController.js, userController.js (Business Logic)
-   - ✓ **Middleware**: auth.js (Authentication)
-   - ✓ **Routes**: Routing logic
-
-4. **Giao diện đẹp và responsive**
-   - ✓ CSS hiện đại với gradient
-   - ✓ Form validation
-   - ✓ Responsive design
-
----
-
 ## 🗄️ Hướng dẫn cài đặt Database trên XAMPP
 
 ### Bước 1: Cài đặt XAMPP
@@ -54,18 +23,6 @@
 3. Copy toàn bộ nội dung file `database_setup.sql`
 4. Paste vào ô SQL và click **"Go"**
 5. Database `shopdb` sẽ được tạo với 2 bảng: `products` và `users`
-
-**Cách 2: Sử dụng MySQL Command Line**
-```bash
-# Mở Command Prompt hoặc Terminal
-cd C:\xampp\mysql\bin
-
-# Đăng nhập MySQL (password mặc định là rỗng)
-mysql -u root -p
-
-# Trong MySQL prompt, chạy:
-source D:\HK2_Nam4\CongNgheMoi\NguyenVanTong_22662921_ThucHanh_CongNgheMoi\lab1\database_setup.sql
-```
 
 ### Bước 4: Kiểm tra Database
 ```sql
@@ -104,7 +61,8 @@ SELECT * FROM users;
 ### 1. Cài đặt Dependencies
 ```bash
 cd lab1
-npm install
+npm init -y
+npm install express ejs mysql2 express-session bcryptjs
 ```
 
 Packages được cài đặt:
@@ -237,167 +195,4 @@ app.use(session({
 ```
 
 ---
-
-## 🆚 So sánh Node.js vs Java Servlet + JSP
-
-| Tiêu chí | Node.js + Express + EJS | Java Servlet + JSP |
-|----------|------------------------|---------------------|
-| **Ngôn ngữ** | JavaScript (cả client & server) | Java (server), HTML/JSP (view) |
-| **Kiến trúc** | Single-threaded, Event-driven | Multi-threaded |
-| **Performance** | Tốt cho I/O operations, real-time | Tốt cho CPU-intensive tasks |
-| **Learning Curve** | Dễ học hơn, syntax đơn giản | Khó hơn, cần hiểu OOP và Java |
-| **Setup** | Đơn giản (npm install) | Phức tạp (Tomcat, WAR deployment) |
-| **Hot Reload** | ✅ Có (nodemon) | ❌ Cần restart server |
-| **Template Engine** | EJS, Pug, Handlebars | JSP, JSTL |
-| **ORM/Database** | Sequelize, TypeORM, raw SQL | Hibernate, JDBC |
-| **Session** | express-session (memory/store) | HttpSession (built-in) |
-| **Deployment** | Heroku, Vercel, AWS Lambda | Tomcat, GlassFish, WildFly |
-| **Community** | Rất lớn, NPM packages | Lớn, Maven repositories |
-| **Startup Time** | Rất nhanh (~1s) | Chậm (~5-10s) |
-| **Memory Usage** | Thấp hơn | Cao hơn |
-| **Scalability** | Horizontal scaling dễ dàng | Vertical scaling thường dùng |
-| **Async Support** | Native (async/await, Promises) | CompletableFuture (từ Java 8+) |
-
-### Chi tiết so sánh:
-
-#### 1. **Routing**
-
-**Node.js + Express:**
-```javascript
-app.get('/products', requireAuth, ProductController.index);
-app.post('/products/add', requireAuth, ProductController.create);
-```
-- Đơn giản, rõ ràng
-- Middleware dễ thêm
-
-**Java Servlet:**
-```java
-@WebServlet("/products")
-public class ProductServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        // Logic here
-    }
-}
-```
-- Verbose hơn
-- Cần annotations hoặc web.xml
-
-#### 2. **Database Access**
-
-**Node.js (async/await):**
-```javascript
-static async getAll() {
-    const [rows] = await db.query('SELECT * FROM products');
-    return rows;
-}
-```
-- Async/await tự nhiên
-- Non-blocking I/O
-
-**Java JDBC:**
-```java
-public List<Product> getAll() {
-    List<Product> products = new ArrayList<>();
-    try (Connection conn = dataSource.getConnection();
-         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM products");
-         ResultSet rs = stmt.executeQuery()) {
-        while (rs.next()) {
-            products.add(new Product(rs.getInt("id"), ...));
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return products;
-}
-```
-- Nhiều boilerplate code
-- Try-catch bắt buộc
-
-#### 3. **Template Rendering**
-
-**EJS (Node.js):**
-```html
-<% products.forEach(p => { %>
-    <tr>
-        <td><%= p.name %></td>
-        <td>$<%= p.price %></td>
-    </tr>
-<% }) %>
-```
-
-**JSP (Java):**
-```jsp
-<c:forEach items="${products}" var="p">
-    <tr>
-        <td>${p.name}</td>
-        <td>$${p.price}</td>
-    </tr>
-</c:forEach>
-```
-
-#### 4. **Session Management**
-
-**Node.js:**
-```javascript
-req.session.userId = user.id;
-if (req.session.userId) {
-    // Authenticated
-}
-```
-
-**Java Servlet:**
-```java
-HttpSession session = request.getSession();
-session.setAttribute("userId", user.getId());
-if (session.getAttribute("userId") != null) {
-    // Authenticated
-}
-```
-
-### Kết luận:
-
-**Node.js + Express tốt cho:**
-- ✅ Dự án cần phát triển nhanh (startup, MVP)
-- ✅ Real-time applications (chat, notifications)
-- ✅ RESTful APIs
-- ✅ Microservices
-- ✅ Team biết JavaScript
-
-**Java Servlet + JSP tốt cho:**
-- ✅ Enterprise applications lớn
-- ✅ Ứng dụng cần type-safety mạnh
-- ✅ Tích hợp với hệ thống Java legacy
-- ✅ Team có kinh nghiệm Java
-- ✅ Ứng dụng xử lý phức tạp, multi-threading
-
----
-
-## 🎯 Điểm nổi bật của dự án
-
-1. **MVC rõ ràng:** Tách biệt hoàn toàn Model, View, Controller
-2. **Security:** Password hashing với bcrypt, session management
-3. **User Experience:** Giao diện đẹp, responsive, validation
-4. **Code Quality:** Clean code, comments rõ ràng
-5. **Documentation:** Hướng dẫn chi tiết, dễ hiểu
-
----
-
-## 📝 Tác giả
-
-**Nguyễn Văn Tông**  
-MSSV: 22662921  
-Lớp: [Tên lớp]  
-Trường: [Tên trường]
-
----
-
-## 📞 Liên hệ
-
-Nếu có thắc mắc về dự án, vui lòng liên hệ qua email hoặc tạo issue trên repository.
-
----
-
-## 📄 License
-
-MIT License - Free to use for educational purposes.
 
