@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa sản phẩm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input[type="file"]::file-selector-button {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #5568d3;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            object-fit: cover;
+        }
+
+        .image-preview p {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button[type="submit"],
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        button[type="submit"] {
+            background: #48bb78;
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+        }
+
+        .required {
+            color: #f56565;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .optional-note {
+            color: #48bb78;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ Sửa sản phẩm</h1>
+
+        <form action="/products/edit/<%= product.id %>" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Tên sản phẩm <span class="required">*</span></label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Nhập tên sản phẩm"
+                    value="<%= product.name %>"
+                    required
+                    minlength="2"
+                    maxlength="100"
+                >
+                <div class="info-text">Tên sản phẩm từ 2-100 ký tự</div>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Giá (₫) <span class="required">*</span></label>
+                <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    placeholder="0"
+                    value="<%= product.price %>"
+                    required
+                    min="0"
+                    step="1000"
+                >
+                <div class="info-text">Giá sản phẩm (đơn vị: đồng)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Số lượng <span class="required">*</span></label>
+                <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    placeholder="0"
+                    value="<%= product.quantity %>"
+                    required
+                    min="0"
+                    step="1"
+                >
+                <div class="info-text">Số lượng tồn kho</div>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Hình ảnh sản phẩm</label>
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                >
+                <div class="optional-note">Để trống nếu không muốn thay đổi hình ảnh</div>
+
+                <div class="image-preview">
+                    <p>Hình ảnh hiện tại:</p>
+                    <img src="<%= product.url_image %>" alt="<%= product.name %>">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit">💾 Cập nhật</button>
+                <a href="/products" class="btn-cancel">❌ Hủy</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
