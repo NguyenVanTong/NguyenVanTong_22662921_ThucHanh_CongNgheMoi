@@ -11,5 +11,5 @@ app.set("views", "./views");
 app.use("/", require("./routes/index"))
 
 app.listen(3000, ()=>{
-    console.log(`Server is running at http://localhost:3000`);
+    console.log(`Server is running at http://localhost:3000/subjects`);
 });

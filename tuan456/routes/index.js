@@ -1,8 +1,8 @@
-const Router = require("express").Router;
-const router = Router();
+const express = require("express");
+const app = express();
 
-router.get("/",(req,res)=>{
-    res.render("index");
-});
+const subjectRoute = require("./subject.route");
 
-module.exports = router;
+app.use("/subjects", subjectRoute);
+
+module.exports = app;
