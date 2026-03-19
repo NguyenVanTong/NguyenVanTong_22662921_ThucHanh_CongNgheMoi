@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Them san pham</title>
+	<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+	<main class="container">
+		<header class="page-header">
+			<h1>Them san pham</h1>
+			<a class="btn btn-secondary" href="/products">Quay lai</a>
+		</header>
+
+		<form class="card form" action="/products" method="POST" enctype="multipart/form-data">
+			<label for="name">Ten san pham</label>
+			<input id="name" name="name" type="text" required />
+
+			<label for="price">Gia</label>
+			<input id="price" name="price" type="number" min="0" step="1000" required />
+
+			<label for="description">Mo ta</label>
+			<textarea id="description" name="description" rows="4"></textarea>
+
+			<label for="image">Hinh anh</label>
+			<input id="image" name="image" type="file" accept="image/*" />
+
+			<button type="submit" class="btn">Luu san pham</button>
+		</form>
+	</main>
+</body>
+</html>

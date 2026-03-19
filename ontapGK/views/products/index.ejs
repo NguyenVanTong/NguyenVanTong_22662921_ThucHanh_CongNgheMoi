@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Danh sach san pham</title>
+	<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+	<main class="container">
+		<header class="page-header">
+			<h1>Danh sach san pham</h1>
+			<a class="btn" href="/products/new">Them san pham</a>
+		</header>
+
+		<% if (!products.length) { %>
+			<p class="empty">Chua co san pham nao. Hay them san pham moi.</p>
+		<% } else { %>
+			<div class="table-wrapper">
+				<table class="product-table">
+					<thead>
+						<tr>
+							<th>Hinh anh</th>
+							<th>Ten</th>
+							<th>Gia</th>
+							<th>Mo ta</th>
+							<th>Hanh dong</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% products.forEach((product) => { %>
+							<tr>
+								<td>
+									<% if (product.imageUrl) { %>
+										<img class="thumb" src="<%= product.imageUrl %>" alt="<%= product.name %>" />
+									<% } else { %>
+										<span class="no-image">Khong co</span>
+									<% } %>
+								</td>
+								<td><%= product.name %></td>
+								<td><%= Number(product.price || 0).toLocaleString('vi-VN') %> VND</td>
+								<td><%= product.description %></td>
+								<td class="actions">
+									<a class="btn btn-secondary" href="/products/<%= product.id %>">Chi tiet</a>
+									<a class="btn btn-warning" href="/products/<%= product.id %>/edit">Sua</a>
+									<form action="/products/<%= product.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Ban chac chan muon xoa san pham nay?')">
+										<button type="submit" class="btn btn-danger">Xoa</button>
+									</form>
+								</td>
+							</tr>
+						<% }) %>
+					</tbody>
+				</table>
+			</div>
+		<% } %>
+	</main>
+</body>
+</html>
