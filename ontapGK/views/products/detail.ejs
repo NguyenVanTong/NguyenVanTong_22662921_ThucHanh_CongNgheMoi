@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Chi tiet san pham</title>
 	<link rel="stylesheet" href="/css/style.css" />
 </head>
+
 <body>
 	<main class="container">
 		<header class="page-header">
@@ -13,25 +15,46 @@
 			<a class="btn btn-secondary" href="/products">Quay lai</a>
 		</header>
 
-		<article class="card detail-card">
-			<% if (product.imageUrl) { %>
-				<img class="detail-image" src="<%= product.imageUrl %>" alt="<%= product.name %>" />
-			<% } %>
-
-			<div class="detail-content">
-				<h2><%= product.name %></h2>
-				<p class="price"><%= Number(product.price || 0).toLocaleString('vi-VN') %> VND</p>
-				<p><%= product.description || 'Khong co mo ta' %></p>
-				<p class="muted">Cap nhat lan cuoi: <%= product.updatedAt ? new Date(product.updatedAt).toLocaleString('vi-VN') : '-' %></p>
-
-				<div class="actions">
-					<a class="btn btn-warning" href="/products/<%= product.id %>/edit">Sua</a>
-					<form action="/products/<%= product.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Ban chac chan muon xoa san pham nay?')">
-						<button type="submit" class="btn btn-danger">Xoa</button>
-					</form>
-				</div>
+		<% if (messages.error.length) { %>
+			<div class="alert alert-error">
+				<%= messages.error[0] %>
 			</div>
-		</article>
+			<% } %>
+				<% if (messages.success.length) { %>
+					<div class="alert alert-success">
+						<%= messages.success[0] %>
+					</div>
+					<% } %>
+
+						<article class="card detail-card">
+							<% if (product.imageUrl) { %>
+								<img class="detail-image" src="<%= product.imageUrl %>" alt="<%= product.name %>" />
+								<% } %>
+
+									<div class="detail-content">
+										<h2>
+											<%= product.name %>
+										</h2>
+										<p class="price">
+											<%= Number(product.price || 0).toLocaleString('vi-VN') %> VND
+										</p>
+										<p>
+											<%= product.description || 'Khong co mo ta' %>
+										</p>
+										<p class="muted">Cap nhat lan cuoi: <%= product.updatedAt ? new
+												Date(product.updatedAt).toLocaleString('vi-VN') : '-' %>
+										</p>
+
+										<div class="actions">
+											<a class="btn btn-warning" href="/products/<%= product.id %>/edit">Sua</a>
+											<form action="/products/<%= product.id %>?_method=DELETE" method="POST"
+												onsubmit="return confirm('Ban chac chan muon xoa san pham nay?')">
+												<button type="submit" class="btn btn-danger">Xoa</button>
+											</form>
+										</div>
+									</div>
+						</article>
 	</main>
 </body>
+
 </html>
